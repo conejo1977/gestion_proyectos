@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RentaMaq | Tu próximo equipo, a un clic</title>
+<meta name="description" content="Prototipo académico RentaMaq: busca, compara y reserva maquinaria; gestiona equipos, cotizaciones y soporte.">
+<link rel="icon" href="img/favicon.svg">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body><aside id="sidebar"><a class="brand" href="#catalogo"><b class="brandmark">R</b>Renta<span>Maq</span></a>
+<div class="workspace">ESPACIO DE TRABAJO</div><nav id="nav"></nav>
+<div class="side-bottom">
+<div class="support-mini"><span class="shield">✓</span><strong>Tu obra sigue adelante</strong><p>Gestiona incidencias y coordina el respaldo técnico.</p><button class="text-button" data-route="soporte">Centro de soporte</button>
+</div><button class="profile" data-route="perfil"><span class="avatar">AC</span><span><strong id="sideName">Anderson Castro</strong><small id="sideRole">Contratista · cuenta demo</small></span><span>⚙</span></button>
+</div></aside>
+<div class="app">
+<header><button class="icon mobile" id="menu" aria-label="Abrir menú">☰</button>
+<div class="breadcrumb">Mi espacio <span>/</span> <b id="breadcrumb">Explorar equipos</b>
+</div>
+<div class="header-actions"><span class="demo-label">PROTOTIPO INTERACTIVO</span><label class="role-label">Vista <select id="role"><option value="cliente">Contratista</option><option value="proveedor">Proveedor</option></select></label><button class="icon" data-route="mensajes" aria-label="Mensajes">✉</button><span class="avatar small">AC</span>
+</div>
+</header>
+<main id="main" tabindex="-1">
+</main>
+<footer>RentaMaq © 2026 · Proyecto académico de Gestión de Proyectos <button class="text-button" data-route="acerca">Acerca del prototipo</button><span>Datos de ejemplo · Operaciones locales</span>
+</footer>
+</div>
+<div id="compareBar" hidden>
+</div><dialog id="modal">
+<div class="modal-head"><span id="modalTitle"></span><button id="closeModal" class="icon" aria-label="Cerrar ventana">✕</button>
+</div>
+<div id="modalBody">
+</div></dialog>
+<div id="toast" role="status" aria-live="polite">
+</div>
+<script src="js/app.js">
+</script>
+</body>
+</html>
+

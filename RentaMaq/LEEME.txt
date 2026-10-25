@@ -1,0 +1,138 @@
+RENTAMAQ · GUÍA RÁPIDA
+======================
+
+Plataforma para publicar, buscar y alquilar maquinaria y equipos de
+construcción. La aplicación es un sitio estático: no requiere compilación ni
+servidor propio. La autenticación y los datos se guardan en Supabase, por lo
+que una misma cuenta funciona desde cualquier dispositivo.
+
+La guía completa, con el detalle de cada paso y solución de problemas, está en
+README.md.
+
+
+1. PUBLICAR EL SITIO EN GITHUB PAGES
+------------------------------------
+1. Crea un repositorio público en GitHub.
+2. Sube el contenido de esta carpeta: index.html, README.md, LEEME.txt y la
+   carpeta assets. Incluye también la carpeta supabase si quieres conservar los
+   archivos SQL en el repositorio.
+3. En el repositorio entra a Settings > Pages.
+4. En "Build and deployment" elige "Deploy from a branch", rama main y carpeta
+   / (root). Guarda los cambios.
+5. Espera uno o dos minutos. La dirección publicada tendrá la forma:
+   https://TU-USUARIO.github.io/NOMBRE-DEL-REPOSITORIO/
+
+No muevas index.html fuera de la carpeta: necesita la subcarpeta assets.
+
+
+2. PREPARAR SUPABASE
+--------------------
+El proyecto ya está vinculado en assets/js/core/config.js. Solo falta crear las
+tablas y cargar las cuentas.
+
+1. Abre https://supabase.com/dashboard y entra al proyecto de RentaMaq.
+2. Ve a SQL Editor > New query.
+3. Copia todo el contenido de supabase/schema.sql, pégalo y ejecuta Run.
+   Debe terminar sin errores.
+4. Abre otra consulta, pega todo el contenido de supabase/seed.sql y ejecútalo.
+   Este paso crea las cuentas Demo, el catálogo inicial y las operaciones de
+   ejemplo. Es idempotente: puedes repetirlo sin duplicar datos.
+5. Ve a Storage y comprueba que existe el bucket público equipment-images.
+
+Si prefieres publicar sin datos de ejemplo, ejecuta solo schema.sql y registra
+tu cuenta desde la pantalla de acceso.
+
+
+3. CONFIGURAR EL ACCESO
+-----------------------
+En Supabase entra a Authentication > URL Configuration.
+
+Site URL:
+  https://TU-USUARIO.github.io/NOMBRE-DEL-REPOSITORIO/
+
+Redirect URLs (agrega las dos):
+  https://TU-USUARIO.github.io/NOMBRE-DEL-REPOSITORIO/
+  https://TU-USUARIO.github.io/NOMBRE-DEL-REPOSITORIO/index.html
+
+Estas direcciones permiten confirmar el correo y restablecer la contraseña.
+Si publicas en un dominio propio, usa esa dirección en lugar de github.io.
+
+En Authentication > Providers > Email:
+- Email está activado.
+- "Confirm email" puede quedar activado. En ese caso, cada cuenta nueva debe
+  abrir el enlace enviado a su correo antes de ingresar.
+- Las cuentas Demo ya están confirmadas y no necesitan ese paso.
+
+
+4. INGRESAR
+-----------
+Abre la dirección de GitHub Pages y usa una cuenta Demo o crea una nueva.
+
+Cuentas Demo (contraseña: Demo1234)
+  Contratista  contratista@rentamaq.pe   Anderson Castro · Constructora Horizonte
+  Proveedor    proveedor@rentamaq.pe     Miguel Sánchez
+  Proveedor    norte@rentamaq.pe         Maquinarias del Norte
+  Proveedor    geo@rentamaq.pe           GeoEquipos Trujillo
+  Proveedor    rental@rentamaq.pe        Norte Rental
+  Proveedor    huanchaco@rentamaq.pe     Equipos Huanchaco
+  Proveedor    energia@rentamaq.pe       Energía para Obras
+
+La pantalla de acceso muestra botones directos para las dos cuentas
+principales. La sección "Cuentas Demo" de Acerca de RentaMaq lista todas.
+
+
+5. QUÉ INCLUYE
+--------------
+- Registro e inicio de sesión con correo y contraseña.
+- Catálogo con búsqueda, filtros, favoritos y comparación.
+- Cotización con jornadas, operador, traslado y garantía.
+- Solicitudes con confirmación, entrega y devolución.
+- Publicación de equipos con fotografía almacenada en Supabase Storage.
+- Mensajería, incidencias y valoraciones.
+- Exportación de alquileres a CSV y respaldo JSON de la cuenta.
+- Sincronización entre dispositivos mediante Supabase Realtime.
+
+Los pagos no se procesan en la plataforma: el contratista registra el medio
+acordado y ambas partes ven la constancia en el resumen del alquiler.
+
+
+6. SI ALGO NO FUNCIONA
+----------------------
+"Falta preparar la base de datos"
+  Ejecuta supabase/schema.sql completo en el SQL Editor.
+
+"No se pudo validar la sesión" al registrarte
+  Revisa Authentication > URL Configuration y confirma que la dirección
+  publicada está en Redirect URLs. Si "Confirm email" está activo, abre el
+  enlace enviado al correo.
+
+El enlace de recuperación abre una página equivocada
+  Agrega la dirección exacta del sitio (con y sin index.html) a Redirect URLs.
+
+No se ven las fotografías nuevas
+  Verifica que el bucket equipment-images exista y sea público.
+
+Los cambios no aparecen en otro dispositivo
+  Cierra sesión y vuelve a entrar, o recarga la página. La sesión y los datos
+  se sincronizan con Supabase.
+
+
+7. ARCHIVOS PRINCIPALES
+-----------------------
+index.html                 Estructura y pantalla de carga
+assets/css/                Estilos base, estructura, componentes y responsive
+assets/js/core/config.js   Proyecto Supabase, bucket y cuentas Demo
+assets/js/core/auth.js     Registro, acceso, recuperación y cuenta
+assets/js/core/store.js    Estado, consultas y sincronización
+assets/js/core/data.js     Operaciones sobre equipos, alquileres y mensajes
+assets/js/ui/              Navegación, estructura e iconos
+assets/js/views/           Catálogo, alquileres, equipos, mensajes y perfil
+assets/js/vendor/          Cliente oficial de Supabase
+assets/img/                Fotografías referenciales del catálogo
+supabase/schema.sql        Tablas, reglas de seguridad, Storage y Realtime
+supabase/seed.sql          Cuentas Demo y datos iniciales
+
+La clave incluida en config.js es la clave pública "anon". Nunca agregues la
+clave service_role al frontend: esa clave omite las reglas de seguridad.
+
+RentaMaq · 2026

@@ -1,0 +1,17 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Se ejecuta cada 3 días a las 06:00 UTC
+    - cron: '0 6 */3 * *'
+  workflow_dispatch: # Esto te permite ejecutarlo manualmente para probar
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database
+        run: |
+          curl -X GET "https://laprapprjecryopmhzfr.supabase.co/rest/v1/?select=*" \
+          -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhcHJhcHByamVjcnlvcG1oemZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NDE0OTAsImV4cCI6MjEwODUxNzQ5MH0.FfxE5bu-dP0f_jfEN50VSUz0DB6rzZ8r3ebLnkeFE_Y" \
+          -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhcHJhcHByamVjcnlvcG1oemZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NDE0OTAsImV4cCI6MjEwODUxNzQ5MH0.FfxE5bu-dP0f_jfEN50VSUz0DB6rzZ8r3ebLnkeFE_Y"

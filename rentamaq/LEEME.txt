@@ -1,0 +1,101 @@
+RENTAMAQ - PROTOTIPO LOCAL
+==========================
+
+Aplicación web académica para conectar contratistas con proveedores de
+maquinaria y equipos de construcción. Funciona por completo en el navegador,
+sin servidor ni base de datos externa.
+
+CÓMO ABRIRLO
+------------
+1. Mantén la carpeta completa (index.html + assets) en el mismo lugar.
+2. Haz doble clic en ABRIR_RENTAMAQ.bat
+   o abre index.html con Chrome, Edge o Firefox.
+3. La aplicación funciona directamente con file://. No necesitas instalar nada.
+
+CUENTAS DE DEMOSTRACIÓN
+-----------------------
+Contratista:
+  Correo:    contratista@rentamaq.pe
+  Contraseña: Demo1234
+  Perfil:    Anderson Castro · Constructora Horizonte
+
+Proveedor verificado:
+  Correo:    proveedor@rentamaq.pe
+  Contraseña: Demo1234
+  Perfil:    Miguel Sánchez · 4 equipos publicados
+
+Otros proveedores de ejemplo (contraseña Demo1234):
+  norte@rentamaq.pe       Maquinarias del Norte (verificado)
+  geo@rentamaq.pe         GeoEquipos Trujillo (verificado)
+  rental@rentamaq.pe      Norte Rental (verificado)
+  huanchaco@rentamaq.pe   Equipos Huanchaco (sin verificar)
+  energia@rentamaq.pe     Energía para Obras (sin verificar)
+
+En la pantalla de acceso también hay botones de acceso rápido para las dos
+cuentas principales.
+
+QUÉ PUEDES HACER
+----------------
+- Registrarte como contratista o proveedor.
+- Iniciar sesión, cerrar sesión y recuperar la contraseña con la pregunta de
+  seguridad elegida al registrarte.
+- Mantener la sesión iniciada en este navegador (opción "Mantener mi sesión").
+- Cambiar contraseña y datos de la cuenta desde "Mi cuenta".
+- Un contratista puede convertirse en proveedor y luego solicitar la
+  verificación simulada de su cuenta.
+- Buscar, filtrar, ordenar, comparar y guardar equipos favoritos.
+- Ver fichas técnicas, cotizar y crear solicitudes de alquiler.
+- Como proveedor: publicar equipos con fotografía, editar, pausar, activar o
+  eliminar publicaciones, y gestionar el ciclo de cada alquiler
+  (solicitud, confirmación, entrega, devolución, pago simulado y reseña).
+- Enviar mensajes a proveedores (con respuesta automática simulada).
+- Crear tickets de soporte y consultar las preguntas frecuentes.
+- Descargar un respaldo JSON de tu cuenta y exportar tus alquileres a CSV.
+
+FOTOGRAFÍAS DE EQUIPOS
+----------------------
+Al publicar o editar un equipo puedes seleccionar una imagen JPG, PNG o WebP,
+arrastrarla al recuadro o quitarla antes de guardar. La imagen se reduce y
+comprime automáticamente en el navegador (máximo aproximado de 1200 px y
+360 KB) y se guarda junto con la publicación.
+
+ALMACENAMIENTO LOCAL
+--------------------
+- Los datos se guardan en localStorage del navegador con la clave
+  "rentamaq-db-v2". La sesión usa "rentamaq-session-v2".
+- Los usuarios nuevos, los equipos que publiques, las solicitudes, mensajes y
+  fotografías viven solo en este equipo y en este navegador.
+- Las contraseñas no se guardan en texto plano: se almacenan como hash SHA-256
+  con sal.
+- Cambiar de navegador o borrar los datos del sitio implica empezar de cero.
+- Si el navegador está en modo privado, los datos se pierden al cerrarlo.
+
+RESTABLECER LA DEMOSTRACIÓN
+---------------------------
+Desde "Mi cuenta" > "Zona delicada" puedes borrar todas las cuentas y datos
+locales para volver al estado inicial. También existe la opción "Restablecer
+datos locales" en la pantalla de acceso.
+Esta acción no se puede deshacer; descarga un respaldo antes si lo necesitas.
+
+ESTRUCTURA DE ARCHIVOS
+----------------------
+index.html                    Estructura principal de la aplicación
+ABRIR_RENTAMAQ.bat            Acceso directo para Windows
+LEEME.txt                     Este archivo
+assets/css/                   base, layout, componentes, acceso y responsive
+assets/js/app.js              Arranque y delegación de eventos
+assets/js/core/               utilidades, almacenamiento y autenticación
+assets/js/data/seed.js        Datos de demostración
+assets/js/ui/                 iconos y estructura de la interfaz
+assets/js/views/              catálogo, alquileres, inventario, perfil, etc.
+assets/img/                   Fotografías de ejemplo (eq1.jpg a eq6.jpg)
+
+NOTAS
+-----
+- Los enlaces de la sección "Acerca del prototipo" son referencias externas y
+  solo requieren Internet si decides abrirlos.
+- La verificación de proveedores y los pagos son simulados con fines
+  académicos.
+- No muevas index.html fuera de la carpeta: necesita la subcarpeta assets.
+
+Proyecto académico de Gestión de Proyectos · 2026.

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RentaMaq | Tu próximo equipo, a un clic</title>
+  <meta name="description" content="RentaMaq: busca, compara y alquila maquinaria. Publica tus equipos con fotografías y gestiona solicitudes como proveedor.">
+  <meta name="theme-color" content="#ed651c">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ef681f'/%3E%3Ctext x='6' y='24' font-family='Arial' font-weight='900' font-size='25' fill='white'%3ER%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="is-auth">
+
+  <!-- ===================== Pantalla de acceso ===================== -->
+  <section id="authScreen" class="auth-screen" aria-label="Acceso a RentaMaq">
+    <div class="auth-hero">
+      <div>
+        <div class="auth-brand"><b class="brandmark">R</b>Renta<span>Maq</span></div>
+        <h1>Tu próximo equipo,<br><span>a un clic</span></h1>
+        <p class="lead">La plataforma que conecta maquinaria disponible con las obras que necesitan avanzar. Busca, compara, publica y coordina todo en un solo lugar.</p>
+        <div class="auth-features">
+          <div><b>✓</b><span>Catálogo con fichas técnicas, tarifas y disponibilidad por fecha.</span></div>
+          <div><b>✓</b><span>Cuentas separadas para contratistas y proveedores, con distintivos de confianza.</span></div>
+          <div><b>✓</b><span>Publica tus equipos con fotografía, recibe solicitudes y confirma el alquiler.</span></div>
+        </div>
+        <div class="auth-stats">
+          <div><strong>9</strong><span>equipos de ejemplo</span></div>
+          <div><strong>2</strong><span>tipos de cuenta</span></div>
+          <div><strong>100 %</strong><span>local y sin servidor</span></div>
+        </div>
+      </div>
+      <footer>
+        <span>Proyecto académico de Gestión de Proyectos · 2026</span>
+        <span>Datos de demostración · Operaciones locales</span>
+      </footer>
+    </div>
+
+    <div class="auth-panel">
+      <div class="auth-card" id="authCard" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ===================== Aplicación ===================== -->
+  <aside id="sidebar">
+    <a class="brand" href="#catalogo"><b class="brandmark">R</b>Renta<span>Maq</span></a>
+    <div class="workspace">ESPACIO DE TRABAJO</div>
+    <nav id="nav" aria-label="Navegación principal"></nav>
+    <div class="side-bottom">
+      <div class="support-mini">
+        <span class="shield">✓</span>
+        <strong>Tu obra sigue adelante</strong>
+        <p>Gestiona incidencias y coordina el respaldo técnico.</p>
+        <button class="text-button" data-route="soporte">Centro de soporte</button>
+      </div>
+      <div class="side-user" id="sideUser"></div>
+    </div>
+  </aside>
+
+  <div class="app">
+    <header>
+      <button class="icon mobile" id="menu" aria-label="Abrir menú">☰</button>
+      <div class="breadcrumb">Mi espacio <span>/</span> <b id="breadcrumb">Explorar equipos</b></div>
+      <div class="header-actions">
+        <span class="demo-label">APP LOCAL</span>
+        <button class="primary" id="headerPublish" data-publish hidden>＋ Publicar</button>
+        <span id="headerRole"></span>
+        <button class="icon" data-route="mensajes" aria-label="Mensajes" title="Mensajes">✉</button>
+        <button class="header-avatar" data-route="perfil" aria-label="Mi cuenta" title="Mi cuenta"><span class="avatar small" id="headerAvatar">RM</span></button>
+        <button class="icon logout-btn" data-logout aria-label="Cerrar sesión" title="Cerrar sesión">⏻</button>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1"></main>
+
+    <footer>
+      RentaMaq © 2026 · Proyecto académico de Gestión de Proyectos
+      <button class="text-button" data-route="acerca">Acerca del prototipo</button>
+      <span>Datos de ejemplo · Operaciones locales</span>
+    </footer>
+  </div>
+
+  <div id="compareBar" hidden></div>
+
+  <dialog id="modal" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <span id="modalTitle"></span>
+      <button id="closeModal" class="icon" aria-label="Cerrar ventana">✕</button>
+    </div>
+    <div id="modalBody"></div>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div style="padding:30px;font-family:Arial;background:#fff3e9;color:#7a3b13">
+      RentaMaq necesita JavaScript para iniciar sesión, publicar equipos y guardar tus datos. Actívalo en este navegador y recarga la página.
+    </div>
+  </noscript>
+
+  <!-- Datos y utilidades -->
+  <script defer src="assets/js/data/seed.js"></script>
+  <script defer src="assets/js/core/utils.js"></script>
+  <script defer src="assets/js/core/store.js"></script>
+  <script defer src="assets/js/core/auth.js"></script>
+
+  <!-- Interfaz -->
+  <script defer src="assets/js/ui/icons.js"></script>
+  <script defer src="assets/js/ui/shell.js"></script>
+
+  <!-- Vistas -->
+  <script defer src="assets/js/views/auth.js"></script>
+  <script defer src="assets/js/views/catalog.js"></script>
+  <script defer src="assets/js/views/bookings.js"></script>
+  <script defer src="assets/js/views/dashboard.js"></script>
+  <script defer src="assets/js/views/inventory.js"></script>
+  <script defer src="assets/js/views/messages.js"></script>
+  <script defer src="assets/js/views/support.js"></script>
+  <script defer src="assets/js/views/profile.js"></script>
+  <script defer src="assets/js/views/about.js"></script>
+
+  <!-- Arranque -->
+  <script defer src="assets/js/app.js"></script>
+</body>
+</html>

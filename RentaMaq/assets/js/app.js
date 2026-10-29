@@ -66,6 +66,11 @@ function handleGlobalClick(event) {
     return;
   }
 
+  if (data.request) {
+    detail(data.request, true);
+    return;
+  }
+
   if (data.detail) {
     detail(data.detail);
     return;

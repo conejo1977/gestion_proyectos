@@ -63,7 +63,7 @@ function inventory() {
       <div class="stat"><span>Equipos publicados</span><strong>${equipment.length}</strong><small>${availableCount} disponibles</small></div>
       <div class="stat"><span>Disponibles</span><strong>${availableCount}</strong><small>Visibles para solicitudes</small></div>
       <div class="stat"><span>Pausados</span><strong>${equipment.length - availableCount}</strong><small>Ocultos para nuevas reservas</small></div>
-      <div class="stat"><span>Solicitudes activas</span><strong>${visibleBookings(user).filter((booking) => ['Solicitada', 'Confirmada', 'En curso'].includes(booking.status)).length}</strong><small>En tus equipos</small></div>
+      <div class="stat"><span>Solicitudes activas</span><strong>${incomingBookings(user).filter((booking) => ['Solicitada', 'Confirmada', 'En curso'].includes(booking.status)).length}</strong><small>En tus equipos</small></div>
     </div>
     ${equipment.length ? `
       <div class="panel table-wrap">

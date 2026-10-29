@@ -34,6 +34,7 @@ const ROUTE_TITLES = {
   reservas: 'Alquileres',
   mensajes: 'Mensajes',
   panel: 'Resumen de actividad',
+  planes: 'Planes y precios',
   equipos: 'Mis equipos',
   soporte: 'Soporte y ayuda',
   perfil: 'Mi cuenta',
@@ -46,6 +47,7 @@ const routePages = () => ({
   reservas: bookings,
   mensajes: messages,
   panel: dashboard,
+  planes: plans,
   equipos: inventory,
   soporte: support,
   perfil: profile,
@@ -157,7 +159,8 @@ function navItems(user = currentUser()) {
     ['favoritos', 'Mis favoritos'],
     ['reservas', isProvider(user) ? 'Solicitudes de alquiler' : 'Mis alquileres'],
     ['mensajes', 'Mensajes'],
-    ['panel', 'Resumen de actividad']
+    ['panel', 'Resumen de actividad'],
+    ['planes', 'Planes y precios']
   ];
   if (isProvider(user)) items.push(['equipos', 'Mis equipos']);
   items.push(['soporte', 'Soporte y ayuda']);

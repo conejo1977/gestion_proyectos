@@ -25,12 +25,14 @@ function bookings() {
       return `<button data-book-filter="${status}" class="${bookingFilter === status ? 'active' : ''}">${status}${count ? ` · ${count}` : ''}</button>`;
     }).join('');
 
-  const rows = list.map((booking) => `
+  const rows = list.map((booking) => {
+    const asProvider = booking.providerId === user.id;
+    return `
     <tr>
       <td>
         <strong>${esc(booking.equipmentName)}</strong>
         <small>${esc(booking.project)}</small>
-        <small>${provider ? `Cliente: ${esc(booking.clientName)}` : `Proveedor: ${esc(booking.providerName)}`}</small>
+        <small>${asProvider ? `Cliente: ${esc(booking.clientName)}` : `Proveedor: ${esc(booking.providerName)}`}</small>
       </td>
       <td>${date(booking.start)}<small>al ${date(booking.end)} · ${booking.days} días</small></td>
       <td>${money(booking.total)}<small>Garantía: ${money(booking.deposit)}</small></td>
@@ -39,12 +41,13 @@ function bookings() {
         <button data-booking="${booking.id}">Ver detalle</button>
         ${bookingActions(booking)}
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 
   $('#main').innerHTML = heading(
     provider ? 'Solicitudes y alquileres' : 'Mis alquileres',
     provider
-      ? 'Revisa las solicitudes de tus equipos y registra cada etapa del alquiler.'
+      ? 'Revisa las solicitudes de tus equipos y los alquileres que hayas solicitado.'
       : 'Controla cada etapa: cotización, confirmación, entrega y devolución.',
     '<button data-export>Descargar CSV</button>'
   ) + `
@@ -64,7 +67,7 @@ function bookings() {
         iconName: 'reservas'
       })}
     <div class="notice">${provider
-      ? 'Estas solicitudes corresponden únicamente a los equipos de tu cuenta. Confirma solo cuando el equipo y las fechas estén verificados.'
+      ? 'Aquí ves las solicitudes de tus equipos y los alquileres que hayas solicitado con otras cuentas. Confirma solo cuando el equipo y las fechas estén verificados.'
       : 'Solo verás las operaciones de tu cuenta. El proveedor recibe la solicitud, revisa la disponibilidad y confirma el alquiler desde su panel.'}</div>`;
 
   if (bookingFilter !== 'Todas' && !list.length && all.length) {
@@ -75,32 +78,33 @@ function bookings() {
 function bookingActions(booking) {
   const user = currentUser();
   if (!user || !canManageBooking(booking, user)) return '';
-  const provider = isProvider(user);
+  const asProvider = booking.providerId === user.id;
+  const asClient = booking.clientId === user.id;
   const actions = [];
 
-  if (!provider && booking.status === 'Cotización') {
+  if (asClient && booking.status === 'Cotización') {
     actions.push(`<button class="primary" data-transition="${booking.id}" data-status="Solicitada">Solicitar</button>`);
   }
-  if (provider && booking.status === 'Solicitada') {
+  if (asProvider && booking.status === 'Solicitada') {
     actions.push(`<button class="primary" data-transition="${booking.id}" data-status="Confirmada">Confirmar</button>`);
     actions.push(`<button data-cancel="${booking.id}">Rechazar</button>`);
   }
-  if (provider && booking.status === 'Confirmada') {
+  if (asProvider && booking.status === 'Confirmada') {
     actions.push(`<button class="primary" data-transition="${booking.id}" data-status="En curso">Registrar entrega</button>`);
   }
-  if (provider && booking.status === 'En curso') {
+  if (asProvider && booking.status === 'En curso') {
     actions.push(`<button class="primary" data-transition="${booking.id}" data-status="Finalizada">Registrar devolución</button>`);
   }
-  if (!provider && ['Cotización', 'Solicitada', 'Confirmada'].includes(booking.status)) {
+  if (asClient && ['Cotización', 'Solicitada', 'Confirmada'].includes(booking.status)) {
     actions.push(`<button data-cancel="${booking.id}">Cancelar</button>`);
   }
-  if (!provider && ['Confirmada', 'En curso'].includes(booking.status) && !booking.paid) {
+  if (asClient && ['Confirmada', 'En curso'].includes(booking.status) && !booking.paid) {
     actions.push(`<button data-pay="${booking.id}">Registrar forma de pago</button>`);
   }
-  if (!provider && booking.paid) {
+  if (asClient && booking.paid) {
     actions.push(`<button data-pay="${booking.id}">Ver forma de pago</button>`);
   }
-  if (!provider && booking.status === 'Finalizada' && !booking.reviewed) {
+  if (asClient && booking.status === 'Finalizada' && !booking.reviewed) {
     actions.push(`<button data-review="${booking.id}">Valorar</button>`);
   }
   return actions.join('');
@@ -108,7 +112,7 @@ function bookingActions(booking) {
 
 const canCancel = (booking, user = currentUser()) => {
   if (!booking || !user || !canManageBooking(booking, user)) return false;
-  if (isProvider(user)) return ['Solicitada', 'Confirmada'].includes(booking.status);
+  if (booking.providerId === user.id) return ['Solicitada', 'Confirmada'].includes(booking.status);
   return ['Cotización', 'Solicitada', 'Confirmada'].includes(booking.status);
 };
 
@@ -133,11 +137,11 @@ async function transition(id, status, button = null) {
   }
 
   if (status === 'Solicitada') {
-    if (isProvider(user)) {
+    if (booking.clientId !== user.id) {
       toast('Solo el contratista puede convertir una cotización en solicitud.');
       return;
     }
-  } else if (!isProvider(user)) {
+  } else if (booking.providerId !== user.id) {
     toast('Esta etapa la gestiona el proveedor desde su cuenta.');
     return;
   }
@@ -175,13 +179,13 @@ async function cancelBooking(id, button = null) {
     return;
   }
   const user = currentUser();
-  const provider = isProvider(user);
-  modal(provider ? 'Rechazar solicitud' : 'Cancelar operación', `
-    <p>${provider ? '¿Quieres rechazar' : '¿Quieres cancelar'} la operación <strong>${esc(booking.id)}</strong> de ${esc(booking.equipmentName)}?</p>
+  const asProvider = booking.providerId === user.id && booking.clientId !== user.id;
+  modal(asProvider ? 'Rechazar solicitud' : 'Cancelar operación', `
+    <p>${asProvider ? '¿Quieres rechazar' : '¿Quieres cancelar'} la operación <strong>${esc(booking.id)}</strong> de ${esc(booking.equipmentName)}?</p>
     <p class="muted">Se conservará en el historial con estado Cancelada. La otra parte verá el cambio de inmediato.</p>
     <div class="form-actions">
       <button data-booking="${booking.id}">Volver</button>
-      <button class="primary" id="confirmCancel">${provider ? 'Rechazar solicitud' : 'Cancelar operación'}</button>
+      <button class="primary" id="confirmCancel">${asProvider ? 'Rechazar solicitud' : 'Cancelar operación'}</button>
     </div>`);
   $('#confirmCancel').onclick = (event) => withBusy(event.currentTarget, 'Guardando…', async () => {
     const result = await cancelBookingRecord(booking.id);
@@ -192,7 +196,7 @@ async function cancelBooking(id, button = null) {
     await refreshCloud({ render: false, silent: true });
     closeModal();
     render();
-    toast(provider ? 'Solicitud rechazada.' : 'Operación cancelada.');
+    toast(asProvider ? 'Solicitud rechazada.' : 'Operación cancelada.');
   });
   if (button) button.disabled = false;
 }
@@ -206,8 +210,8 @@ function bookingDetail(id) {
     return;
   }
 
-  const provider = isProvider(user);
-  const otherUserId = provider ? booking.clientId : booking.providerId;
+  const asProvider = booking.providerId === user.id && booking.clientId !== user.id;
+  const otherUserId = asProvider ? booking.clientId : booking.providerId;
   const otherUser = userById(otherUserId);
   const item = equipmentById(booking.equipmentId);
   const review = state.reviews.find((entry) => entry.bookingId === booking.id);
@@ -229,7 +233,7 @@ function bookingDetail(id) {
         <p class="muted" style="font-size:14px">La garantía se devuelve después de verificar el estado del equipo. Cualquier incidencia se evalúa con el proveedor antes de definir el ajuste.</p>
         ${otherUser ? `<div class="mini-profile" style="margin:14px 0">
           <span class="avatar">${esc(initials(otherUser.name))}</span>
-          <div><strong>${esc(displayName(otherUser))}</strong><small>${provider ? 'Contratista' : 'Proveedor'}${otherUser.city ? ` · ${esc(otherUser.city)}` : ''}</small></div>
+          <div><strong>${esc(displayName(otherUser))}</strong><small>${asProvider ? 'Contratista' : 'Proveedor'}${otherUser.city ? ` · ${esc(otherUser.city)}` : ''}</small></div>
         </div>` : ''}
         ${booking.paid ? `<div class="info-strip"><b>Forma de pago acordada:</b> ${esc(booking.paymentMethod || 'Registrada')} · ${money(booking.total + booking.deposit)}</div>` : ''}
         ${review ? `<div class="notice">Valoración del contratista: <strong>${'★'.repeat(Number(review.rating))}</strong> ${esc(review.comment)}</div>` : ''}
@@ -239,7 +243,7 @@ function bookingDetail(id) {
     </div>
     <div class="form-actions no-print">
       <button data-print>Imprimir / guardar PDF</button>
-      ${otherUserId ? `<button data-contact-user="${otherUserId}">✉ Contactar ${provider ? 'al cliente' : 'al proveedor'}</button>` : ''}
+      ${otherUserId ? `<button data-contact-user="${otherUserId}">✉ Contactar ${asProvider ? 'al cliente' : 'al proveedor'}</button>` : ''}
       ${bookingActions(booking)}
     </div>
     ${!item ? '<p class="muted" style="font-size:12px;margin-top:14px">El anuncio original ya no está en el catálogo; se conservan los datos de la operación.</p>' : ''}`);
@@ -249,7 +253,7 @@ function payBooking(id) {
   const booking = bookingById(id);
   const user = currentUser();
   if (!booking || !user) return;
-  if (!canManageBooking(booking, user) || isProvider(user)) {
+  if (!canManageBooking(booking, user) || booking.clientId !== user.id) {
     toast('La forma de pago la registra el contratista de la operación.');
     return;
   }

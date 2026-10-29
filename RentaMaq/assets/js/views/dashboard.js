@@ -14,7 +14,7 @@ function dashboard() {
 }
 
 function clientDashboard(user) {
-  const operations = visibleBookings(user);
+  const operations = outgoingBookings(user);
   const active = operations.filter((booking) => ['Confirmada', 'En curso'].includes(booking.status));
   const finished = operations.filter((booking) => booking.status === 'Finalizada');
   const total = operations
@@ -64,7 +64,7 @@ function clientDashboard(user) {
 
 function providerDashboard(user) {
   const equipment = myEquipment(user);
-  const operations = visibleBookings(user);
+  const operations = incomingBookings(user);
   const pending = operations.filter((booking) => booking.status === 'Solicitada');
   const active = operations.filter((booking) => ['Confirmada', 'En curso'].includes(booking.status));
   const volume = operations

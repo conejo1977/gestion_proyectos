@@ -10,6 +10,8 @@
 
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
+@media(max-width:700px){.plans-grid{grid-template-columns:1fr;gap:16px}.plan-card{padding:22px 20px 20px}.plan-price strong{font-size:34px}.plans-note{align-items:flex-start;flex-direction:column;gap:14px}.plans-note button{width:100%}}
+
 @media print{body{background:white}#sidebar,header,footer,#compareBar,#toast,.modal-head,.no-print{display:none!important}.app{margin:0}main{padding:0}body:has(dialog[open]) main{display:none}dialog[open]{position:absolute;max-height:none;width:100%;box-shadow:none;overflow:visible;inset:0;margin:0;border-radius:0}dialog::backdrop{background:white}.panel{break-inside:avoid}.print-only{display:block}.booking-box{break-inside:avoid}}
 
-@media(max-width:700px){.grid{grid-template-columns:1fr}.equipment-photo{height:225px}.card-content{padding:18px}.card-content h3{font-size:18px}.card-bottom{flex-direction:row;align-items:center}.detail-btn{width:auto}.price{font-size:23px}.specs-mini span{font-size:12px}.filter-group label{font-size:13px}.steps{grid-template-columns:1fr}.searchbox{grid-template-columns:1fr}.search-field{padding:8px}.searchbox button{min-height:45px}}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.equipment-photo{height:225px}.card-content{padding:18px}.card-content h3{font-size:18px}.card-bottom{flex-direction:row;align-items:center}.detail-btn{width:auto}.price{font-size:23px}.specs-mini span{font-size:12px}.filter-group label{font-size:13px}.steps{grid-template-columns:1fr}.searchbox{grid-template-columns:1fr}.search-field{padding:8px}.searchbox button{min-height:45px}#headerPublish,#headerRole{display:none}}

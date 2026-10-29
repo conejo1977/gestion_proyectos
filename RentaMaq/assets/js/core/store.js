@@ -189,11 +189,27 @@ const myEquipment = (user = currentUser()) => (user
   ? state.equipment.filter((item) => item.providerId === user.id)
   : []);
 
+const bookingRole = (booking, user = currentUser()) => {
+  if (!booking || !user) return null;
+  if (booking.clientId === user.id) return 'client';
+  if (booking.providerId === user.id) return 'provider';
+  return null;
+};
+
+const incomingBookings = (user = currentUser()) => (!user
+  ? []
+  : state.bookings.filter((booking) => booking.providerId === user.id && booking.status !== 'Cotización'));
+
+const outgoingBookings = (user = currentUser()) => (!user
+  ? []
+  : state.bookings.filter((booking) => booking.clientId === user.id));
+
 const visibleBookings = (user = currentUser()) => {
   if (!user) return [];
-  return isProvider(user)
-    ? state.bookings.filter((booking) => booking.providerId === user.id && booking.status !== 'Cotización')
-    : state.bookings.filter((booking) => booking.clientId === user.id);
+  return state.bookings.filter((booking) => (
+    booking.clientId === user.id
+    || (booking.providerId === user.id && booking.status !== 'Cotización')
+  ));
 };
 
 const visibleThreads = (user = currentUser()) => {
@@ -231,10 +247,7 @@ const threadPartner = (thread, user = currentUser()) => {
   return userById(otherId);
 };
 
-const canManageBooking = (booking, user = currentUser()) => {
-  if (!booking || !user) return false;
-  return isProvider(user) ? booking.providerId === user.id : booking.clientId === user.id;
-};
+const canManageBooking = (booking, user = currentUser()) => Boolean(bookingRole(booking, user));
 
 /* ---------------------------- Carga en la nube --------------------------- */
 

@@ -30,6 +30,7 @@ function equipmentImage(item, detail = false) {
 function card(item) {
   const user = currentUser();
   const mine = user && item.providerId === user.id;
+  const canRequest = user && !mine;
   const favorite = isFavorite(item.id);
   const isAvailable = available(item, filters.start);
   return `
@@ -53,6 +54,7 @@ function card(item) {
           <div class="price">${money(item.price)} <small>/ día</small></div>
           <button class="detail-btn outline-orange" data-detail="${item.id}">Ver equipo</button>
         </div>
+        ${canRequest ? `<button class="primary card-request" data-request="${item.id}">Solicitar alquiler</button>` : ''}
         <label class="compare-toggle"><input type="checkbox" data-compare="${item.id}" ${compare.includes(item.id) ? 'checked' : ''}> Comparar equipo</label>
       </div>
     </article>`;
@@ -243,14 +245,14 @@ function compareView() {
     </div>`);
 }
 
-function detail(id) {
+function detail(id, focusRequest = false) {
   const item = equipmentById(id);
   if (!item) return;
   const user = currentUser();
   const mine = user && item.providerId === user.id;
   const start = filters.start && filters.start >= today() ? filters.start : today();
   const providerUser = userById(item.providerId);
-  const canRequest = user && !isProvider(user) && !mine;
+  const canRequest = user && !mine;
 
   const providerCard = `
     <div class="mini-profile" style="margin:17px 0">
@@ -316,7 +318,10 @@ function detail(id) {
         <h3 class="price">${money(item.price)} <small>/ día</small></h3>
         <div class="role-line">${providerCard}</div>
         <p style="font-size:14px"><span class="verified">★ ${item.rating || 'Sin reseñas'}</span> <small class="muted">· valoración de la comunidad</small></p>
-        ${!mine ? `<button data-contact-provider="${item.providerId}" data-equipment-id="${item.id}">✉ Consultar al proveedor</button>` : ''}
+        <div class="inline-actions">
+          ${canRequest ? `<button class="primary" data-request="${item.id}">Solicitar alquiler</button>` : ''}
+          ${!mine ? `<button data-contact-provider="${item.providerId}" data-equipment-id="${item.id}">✉ Consultar al proveedor</button>` : ''}
+        </div>
         <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
         <h3>Mantenimiento y respaldo</h3>
         <div class="timeline">
@@ -327,6 +332,16 @@ function detail(id) {
       </div>
     </div>
     ${quoteForm}`);
+
+  if (canRequest && focusRequest) {
+    setTimeout(() => {
+      const dialog = $('#modal');
+      const box = $('#modalBody .booking-box');
+      if (!dialog || !box) return;
+      const head = dialog.querySelector('.modal-head');
+      dialog.scrollTop = Math.max(0, box.offsetTop - (head?.offsetHeight || 0) - 16);
+    }, 60);
+  }
 
   if (canRequest) {
     const update = () => {
@@ -398,10 +413,6 @@ function costRows(cost) {
 async function createBooking(item, status) {
   const user = currentUser();
   if (!user) return;
-  if (isProvider(user)) {
-    toast('Las solicitudes de alquiler se crean con una cuenta de contratista.');
-    return;
-  }
   if (item.providerId === user.id) {
     toast('No puedes solicitar tu propio equipo.');
     return;
